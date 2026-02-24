@@ -1,0 +1,53 @@
+!pip install torch transformers pandas scikit-learn
+# sentiment_analysis.py
+
+import pandas as pd
+import torch
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+
+def main():
+    # -------------------------------
+    # Step 1: Load your data
+    # -------------------------------
+    # Make sure your CSV has a column named "text"
+    df = pd.read_csv("data.csv")
+    if "text" not in df.columns:
+        raise ValueError("CSV file must have a 'text' column")
+    print("Data loaded:")
+    print(df.head())
+
+    # -------------------------------
+    # Step 2: Load pre-trained model
+    # -------------------------------
+    model_name = "distilbert-base-uncased-finetuned-sst-2-english"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSequenceClassification.from_pretrained(model_name)
+
+    # -------------------------------
+    # Step 3: Tokenize text
+    # -------------------------------
+    texts = df["text"].tolist()
+    inputs = tokenizer(texts, return_tensors="pt", padding=True, truncation=True)
+
+    # -------------------------------
+    # Step 4: Make predictions
+    # -------------------------------
+    with torch.no_grad():
+        outputs = model(**inputs)
+        predictions = torch.argmax(outputs.logits, dim=1)
+
+    # Map numeric predictions to labels
+    labels = ["negative", "positive"]
+    df["sentiment"] = [labels[pred] for pred in predictions]
+
+    print("\nPredictions:")
+    print(df)
+
+    # -------------------------------
+    # Step 5: Save results
+    # -------------------------------
+    df.to_csv("predicted_sentiments.csv", index=False)
+    print("\nPredicted sentiments saved to 'predicted_sentiments.csv'")
+
+if __name__ == "__main__":
+    main()
