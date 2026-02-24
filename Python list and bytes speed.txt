@@ -1,0 +1,13 @@
+import time
+import sys
+
+size = 1_000_000
+
+python_list = list(range(size))
+
+start = time.time()
+result = [x * 2 for x in python_list]  # fixed variable name
+end = time.time()
+
+print("python list time:", end - start, "seconds")
+print("python list memory:", sys.getsizeof(python_list), "bytes")
