@@ -1,0 +1,8 @@
+names = ["Ali", "Sara", "john", "Emma"]
+marks = [85,90,78,88]
+average=sum(marks)/len(marks)
+print("average marks:",average)
+print("students withs marks > 80:")
+for i in range (len(marks)):
+  if marks[i] >80:
+    print(names[i],marks[i])
