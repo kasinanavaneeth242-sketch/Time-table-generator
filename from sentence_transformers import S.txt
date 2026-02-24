@@ -1,0 +1,24 @@
+from sentence_transformers import SentenceTransformer, util
+
+# Load the model
+model = SentenceTransformer('all-MiniLM-L6-v2')
+# Take input from user
+text1 = input("Enter Text1: ")
+text2 = input("Enter Text2: ")
+
+# Convert text to embeddings
+embedding1 = model.encode(text1)
+embedding2 = model.encode(text2)
+
+# Calculate similarity
+similarity = util.cos_sim(embedding1, embedding2).item()
+
+# Show result
+print("\nSimilarity score:", round(similarity, 2))
+
+if similarity > 0.75:
+    print("Similarity Level: High")
+elif similarity > 0.4:
+    print("Similarity Level: Medium")
+else:
+    print("Similarity Level: Low")
